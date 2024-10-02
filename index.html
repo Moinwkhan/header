@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mega Menu with Hamburger and Sliding Submenu</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .ct-header {
+        display: none;
+      }
+      .ct-container-full {
+        padding: 0px;
+      }
+
+      .mega-menu {
+        width: 100vw;
+        background-color: #333;
+        color: white;
+        padding: 14px 20px;
+      }
+
+      .main-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100vh;
+        background-color: #333;
+        transition: left 0.3s ease;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        padding-top: 20px;
+        box-sizing: border-box;
+      }
+
+      .main-menu ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+
+      element {
+        left: 0px;
+      }
+      .main-menu .menu-item {
+        padding: 14px 20px;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .main-menu .menu-item:hover {
+        background-color: #575757;
+      }
+
+      .hamburger {
+        display: none;
+        font-size: 30px;
+        cursor: pointer;
+        padding: 8px 15px;
+        color: white;
+        background-color: #333;
+      }
+
+      .submenu,
+      .nested-submenu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 65%;
+        height: 100vh;
+        background-color: grey;
+        transition: left 0.3s ease;
+        z-index: 100;
+        padding: 30px 20px;
+        box-sizing: border-box;
+      }
+
+      .submenu h3,
+      .nested-submenu h3 {
+        color: white;
+        margin: 20px 0;
+      }
+
+      .submenu ul,
+      .nested-submenu ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .submenu li,
+      .nested-submenu li {
+        padding: 8px 0;
+      }
+
+      .submenu a,
+      .nested-submenu a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .submenu a:hover,
+      .nested-submenu a:hover {
+        color: #ccc;
+      }
+
+      .back-button,
+      .nested-back-button {
+        cursor: pointer;
+        color: white;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .mega-menu {
+          width: 100vw;
+        }
+        .main-menu {
+          width: 50%;
+        }
+
+        .hamburger {
+          display: block;
+        }
+      }
+
+      .heads {
+        padding-left: 20px;
+      }
+      @media (min-width: 769px) {
+        .main-menu {
+          position: static;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          background-color: #333;
+          padding: 14px 20px;
+          width: 100vw;
+          height: auto;
+        }
+
+        .main-menu ul {
+          display: flex;
+          flex-direction: row;
+          gap: 20px;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+
+        .main-menu .menu-item {
+          position: relative;
+          padding: 14px 20px;
+          color: white;
+          text-decoration: none;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .submenu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 60%;
+          background-color: grey;
+          display: none;
+          opacity: 0;
+          transform: translateY(-20px);
+          transition: opacity 0.3s ease, transform 0.3s ease;
+          z-index: 100;
+        }
+
+        .main-menu .menu-item:hover .submenu {
+          display: block;
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .hamburger {
+          display: none;
+        }
+
+        .submenu ul {
+          padding: 10px;
+        }
+
+        .submenu li {
+          padding: 8px 0;
+        }
+
+        .submenu a {
+          color: white;
+          text-decoration: none;
+          display: block;
+          padding: 8px 10px;
+          transition: background-color 0.3s ease;
+        }
+
+        .submenu a:hover {
+          background-color: #575757;
+        }
+        .heads {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="mega-menu">
+      <div class="hamburger" id="hamburger">&#9776;</div>
+      <div class="main-menu" id="mainMenu">
+        <h3 class="heads">Menu</h3>
+        <ul>
+          <li class="menu-item" data-menu="services">IoT <span>&gt;</span></li>
+          <li class="menu-item" data-menu="technology">
+            Drones <span>&gt;</span>
+          </li>
+          <li class="menu-item" data-menu="Environmental">Environmental</li>
+          <li class="menu-item" data-menu="Chemical">Chemical & Water</li>
+          <li class="menu-item" data-menu="Structural">Structural</li>
+          <li class="menu-item" data-menu="Resources">Resources</li>
+          <li class="menu-item">Networks</li>
+          <li class="menu-item">Elec</li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="submenu" id="servicesMenu">
+      <div class="back-button" id="backToMain">← Back</div>
+      <div class="submenu-section">
+        <h3>IoT</h3>
+        <ul>
+          <li class="nested-menu-item" data-nested-menu="frontendDev">
+            LoRaWAN <span>&gt;</span>
+          </li>
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev">
+            Zigbee <span>&gt;</span>
+          </li>
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev1">
+            Wi-Fi HaLow<span>&gt;</span>
+          </li>
+
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev2">
+            Z-Wave<span>&gt;</span>
+          </li>
+
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev3">
+            NB – IoT<span>&gt;</span>
+          </li>
+
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev4">
+            BLE & RFID<span>&gt;</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="submenu" id="technologyMenu">
+      <div class="back-button" id="backToMainTech">← Back</div>
+      <div class="submenu-section">
+        <h3>Drones</h3>
+        <ul>
+          <li class="nested-menu-item" data-nested-menu="powerSourceMenu">
+            Power Source <span>&gt;</span>
+          </li>
+          <li class="nested-menu-item" data-nested-menu="NavigationMenu">
+            Navigation & Control <span>&gt;</span>
+          </li>
+          <li><a href="emailmarketing.html">Flight & Altitude Range</a></li>
+          <li><a href="contentmarketing.html">Environmental Suitability</a></li>
+          <li><a href="contentmarketing.html">Size & Weight</a></li>
+          <li><a href="contentmarketing.html">Payload</a></li>
+          <li><a href="contentmarketing.html">Motor & Wing & Rotor Part</a></li>
+          <li><a href="contentmarketing.html">Specialized Functionality</a></li>
+          <li><a href="contentmarketing.html">Drone Use by Industry</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="nested-submenu" id="powerSourceMenu">
+      <div class="nested-back-button" id="backTodrones6">← Back</div>
+      <h3>Power Source</h3>
+      <ul>
+        <li><a href="power_battery.html">Battery Powered Drones </a></li>
+        <li><a href="power_fuel.html"> Gasoline Powered Drones </a></li>
+        <li><a href="power_hybrid.html"> Hydrogen Fuel Cell Drones </a></li>
+        <li><a href="power_solar.html"> Solar Powered Drones</a></li>
+      </ul>
+    </div>
+
+    <div class="nested-submenu" id="NavigationMenu">
+      <div class="nested-back-button" id="backTodrones2">← Back</div>
+      <h3>Navigation & Control</h3>
+      <ul>
+        <li><a href="power_battery.html">GPS Drones </a></li>
+        <li><a href="power_fuel.html"> Hybrid Navigation Drones </a></li>
+        <li><a href="power_hybrid.html"> Vison-Based Navigation Drones </a></li>
+        <li><a href="power_solar.html"> Autonomous Drones </a></li>
+        <li><a href="power_solar.html"> Semi-Autonomous Drones </a></li>
+        <li><a href="power_solar.html"> Manual Control Drones </a></li>
+        <li><a href="power_solar.html"> Cellular Control Drones </a></li>
+        <li><a href="power_solar.html">Wi-Fi Controlled Drones </a></li>
+        <li><a href="power_solar.html">Radio Controlled Drones </a></li>
+        <li><a href="power_solar.html"> Gesture Controlled Drones </a></li>
+      </ul>
+    </div>
+
+    <div class="nested-submenu" id="frontendDevMenu">
+      <div class="nested-back-button" id="backToServices">← Back</div>
+      <h3>LoRaWAN</h3>
+      <ul>
+        <li><a href="backend.html">LoRaWAN Gateways </a></li>
+        <li><a href="backend.html"> LoRaWAN End Devices </a></li>
+        <li>
+          <a href="fullstack.html"
+            >LoRaWAN – Cloud, Server, PC & Mobile Systems
+          </a>
+        </li>
+        <li><a href="uiux.html"> LoRaWAN Accessories</a></li>
+        <li><a href="uiux.html"> LoRaWAN Resources</a></li>
+      </ul>
+    </div>
+
+    <div class="nested-submenu" id="appFrontendDevMenu">
+      <div class="nested-back-button" id="backToAppServices">← Back</div>
+      <h3>ZigBEE</h3>
+      <ul>
+        <li><a href="backend.html">Zigbee Gateways/Hubs </a></li>
+        <li><a href="backend.html">Zigbee End Devices </a></li>
+        <li>
+          <a href="fullstack.html">
+            ZigBee – Cloud, Server, PC & Mobile Systems Zigbee Accessories
+            Zigbee Resources</a
+          >
+        </li>
+        <li><a href="uiux.html"> Zigbee Accessories </a></li>
+        <li><a href="uiux.html"> Zigbee Resources </a></li>
+      </ul>
+    </div>
+    <div class="nested-submenu" id="appFrontendDevMenu1">
+      <div class="nested-back-button" id="backToAppServices1">← Back</div>
+      <h3>Wi-Fi Halow</h3>
+      <ul>
+        <li><a href="socialmedia.html">Wi-Fi HaLow Gateways/Routers </a></li>
+        <li><a href="emailmarketing.html"> Wi-Fi HaLow End Devices </a></li>
+        <li>
+          <a href="contentmarketing.html">
+            Wi-Fi Halow – Cloud, Server, PC & Mobile Systems
+          </a>
+        </li>
+        <li><a href="contentmarketing.html"> Wi-Fi HaLow Accessories </a></li>
+        <li><a href="contentmarketing.html"> Wi-Fi HaLow Resources </a></li>
+      </ul>
+    </div>
+    <div class="nested-submenu" id="appFrontendDevMenu2">
+      <div class="nested-back-button" id="backToAppServices2">← Back</div>
+      <h3>Z-Wave</h3>
+      <ul>
+        <li><a href="backend.html">Z-Wave Gateways/Hubs </a></li>
+        <li><a href="backend.html"> Z-Wave End Devices </a></li>
+        <li>
+          <a href="fullstack.html">
+            Z-Wave – Cloud, Server, PC & Mobile Systems
+          </a>
+        </li>
+        <li><a href="uiux.html"> Z-Wave Accessories </a></li>
+        <li><a href="uiux.html"> Z-Wave Resources </a></li>
+      </ul>
+    </div>
+    <div class="nested-submenu" id="appFrontendDevMenu3">
+      <div class="nested-back-button" id="backToAppServices3">← Back</div>
+      <h3>NB – IoT</h3>
+      <ul>
+        <li><a href="backend.html">NB-IoT Gateways & Routers </a></li>
+        <li><a href="backend.html"> NB-IoT End Devices </a></li>
+        <li><a href="fullstack.html">NB-IoT Systems </a></li>
+        <li><a href="uiux.html"> NB-IoT Accessories </a></li>
+        <li><a href="uiux.html"> NB-IoT Resources </a></li>
+      </ul>
+    </div>
+    <div class="nested-submenu" id="appFrontendDevMenu4">
+      <div class="nested-back-button" id="backToAppServices4">← Back</div>
+      <h3>BLE & RFID</h3>
+      <ul>
+        <li><a href="backend.html">BLE Gateways, Beacons & Accessories </a></li>
+        <li>
+          <a href="backend.html">UHF RFID Readers, Tags & Accessories </a>
+        </li>
+        <li>
+          <a href="fullstack.html">
+            NFC & HF RFID Readers, Tags & Accessories
+          </a>
+        </li>
+        <li><a href="uiux.html">LF RFID Readers, Tags & Accessories </a></li>
+        <li>
+          <a href="uiux.html"
+            >BLE & RFID – Cloud, Server, PC & Mobile Systems
+          </a>
+        </li>
+        <li><a href="uiux.html"> Other RFID Peripherals & Access </a></li>
+      </ul>
+    </div>
+
+    <div class="submenu" id="servicesMenu">
+      <div class="back-button" id="backToMain">← Back</div>
+      <div class="submenu-section">
+        <h3>IoT</h3>
+        <ul>
+          <li class="nested-menu-item" data-nested-menu="frontendDev">
+            LoRaWAN <span>&gt;</span>
+          </li>
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev">
+            Zigbee <span>&gt;</span>
+          </li>
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev1">
+            Wi-Fi HaLow<span>&gt;</span>
+          </li>
+
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev2">
+            Z-Wave<span>&gt;</span>
+          </li>
+
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev3">
+            NB – IoT<span>&gt;</span>
+          </li>
+
+          <li class="nested-menu-item" data-nested-menu="appFrontendDev4">
+            BLE & RFID<span>&gt;</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const mainMenu = document.getElementById("mainMenu");
+      const servicesMenu = document.getElementById("servicesMenu");
+      const technologyMenu = document.getElementById("technologyMenu");
+      const frontendDevMenu = document.getElementById("frontendDevMenu");
+      const appFrontendDevMenu = document.getElementById("appFrontendDevMenu");
+      const powerSourceMenu = document.getElementById("powerSourceMenu");
+      const NavigationMenu = document.getElementById("NavigationMenu");
+      const appFrontendDevMenu1 = document.getElementById(
+        "appFrontendDevMenu1"
+      );
+      const appFrontendDevMenu2 = document.getElementById(
+        "appFrontendDevMenu2"
+      );
+      const appFrontendDevMenu3 = document.getElementById(
+        "appFrontendDevMenu3"
+      );
+      const appFrontendDevMenu4 = document.getElementById(
+        "appFrontendDevMenu4"
+      );
+
+      hamburger.addEventListener("click", () => {
+        if (mainMenu.style.left === "0px") {
+          hideMainMenu();
+        } else {
+          showMainMenu();
+        }
+      });
+
+      const showMainMenu = () => {
+        mainMenu.style.left = "0%";
+      };
+
+      const hideMainMenu = () => {
+        mainMenu.style.left = "-100%";
+      };
+
+      const showSubmenu = (submenu) => {
+        submenu.style.left = "0";
+      };
+
+      const hideSubmenu = (submenu) => {
+        submenu.style.left = "-100%";
+      };
+
+      const showNestedSubmenu = (nestedSubmenu) => {
+        nestedSubmenu.style.left = "0";
+      };
+
+      const hideNestedSubmenu = (nestedSubmenu) => {
+        nestedSubmenu.style.left = "-100%";
+      };
+
+      document
+        .querySelectorAll('.menu-item[data-menu="services"]')
+        .forEach((item) => {
+          item.addEventListener("click", () => {
+            hideMainMenu();
+            showSubmenu(servicesMenu);
+          });
+        });
+
+      document
+        .querySelectorAll('.menu-item[data-menu="technology"]')
+        .forEach((item) => {
+          item.addEventListener("click", () => {
+            hideMainMenu();
+            showSubmenu(technologyMenu);
+          });
+        });
+
+      document.getElementById("backToMain").addEventListener("click", () => {
+        hideSubmenu(servicesMenu);
+        showMainMenu();
+      });
+
+      document
+        .getElementById("backToMainTech")
+        .addEventListener("click", () => {
+          hideSubmenu(technologyMenu);
+          showMainMenu();
+        });
+
+      document.querySelectorAll(".nested-menu-item").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          const nestedMenuId =
+            event.currentTarget.getAttribute("data-nested-menu");
+          hideSubmenu(servicesMenu);
+          if (nestedMenuId === "frontendDev") {
+            showNestedSubmenu(frontendDevMenu);
+          } else if (nestedMenuId === "appFrontendDev") {
+            showNestedSubmenu(appFrontendDevMenu);
+          } else if (nestedMenuId === "appFrontendDev1") {
+            showNestedSubmenu(appFrontendDevMenu1);
+          } else if (nestedMenuId === "appFrontendDev2") {
+            showNestedSubmenu(appFrontendDevMenu2);
+          } else if (nestedMenuId === "appFrontendDev3") {
+            showNestedSubmenu(appFrontendDevMenu3);
+          } else if (nestedMenuId === "appFrontendDev4") {
+            showNestedSubmenu(appFrontendDevMenu4);
+          }
+        });
+      });
+
+      document.querySelectorAll(".nested-menu-item").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          const nestedMenuId =
+            event.currentTarget.getAttribute("data-nested-menu");
+          hideSubmenu(technologyMenu);
+          if (nestedMenuId === "powerSourceMenu") {
+            showNestedSubmenu(powerSourceMenu);
+          }
+        });
+      });
+      document.querySelectorAll(".nested-menu-item").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          const nestedMenuId =
+            event.currentTarget.getAttribute("data-nested-menu");
+          hideSubmenu(technologyMenu);
+          if (nestedMenuId === "NavigationMenu") {
+            showNestedSubmenu(NavigationMenu);
+          }
+        });
+      });
+
+      document
+        .getElementById("backToServices")
+        .addEventListener("click", () => {
+          hideNestedSubmenu(frontendDevMenu);
+          showSubmenu(servicesMenu);
+        });
+
+      document
+        .getElementById("backToAppServices")
+        .addEventListener("click", () => {
+          hideNestedSubmenu(appFrontendDevMenu);
+          showSubmenu(servicesMenu);
+        });
+      document
+        .getElementById("backToAppServices1")
+        .addEventListener("click", () => {
+          hideNestedSubmenu(appFrontendDevMenu1);
+          showSubmenu(servicesMenu);
+        });
+      document
+        .getElementById("backToAppServices2")
+        .addEventListener("click", () => {
+          hideNestedSubmenu(appFrontendDevMenu2);
+          showSubmenu(servicesMenu);
+        });
+      document
+        .getElementById("backToAppServices3")
+        .addEventListener("click", () => {
+          hideNestedSubmenu(appFrontendDevMenu3);
+          showSubmenu(servicesMenu);
+        });
+      document
+        .getElementById("backToAppServices4")
+        .addEventListener("click", () => {
+          hideNestedSubmenu(appFrontendDevMenu4);
+          showSubmenu(servicesMenu);
+        });
+      document.getElementById("backTodrones6").addEventListener("click", () => {
+        hideNestedSubmenu(powerSourceMenu);
+        showSubmenu(technologyMenu);
+      });
+      document.getElementById("backTodrones2").addEventListener("click", () => {
+        hideNestedSubmenu(NavigationMenu);
+        showSubmenu(technologyMenu);
+      });
+
+      document.addEventListener("click", function (event) {
+        const isClickInsideMenu =
+          mainMenu.contains(event.target) ||
+          servicesMenu.contains(event.target) ||
+          technologyMenu.contains(event.target) ||
+          frontendDevMenu.contains(event.target) ||
+          appFrontendDevMenu.contains(event.target) ||
+          appFrontendDevMenu1.contains(event.target) ||
+          appFrontendDevMenu2.contains(event.target) ||
+          appFrontendDevMenu3.contains(event.target) ||
+          appFrontendDevMenu4.contains(event.target) ||
+          powerSourceMenu.contains(event.target) ||
+          NavigationMenu.contains(event.target) ||
+          hamburger.contains(event.target);
+
+        if (!isClickInsideMenu) {
+          hideMainMenu();
+          hideSubmenu(servicesMenu);
+          hideSubmenu(technologyMenu);
+          hideNestedSubmenu(frontendDevMenu);
+          hideNestedSubmenu(appFrontendDevMenu);
+        }
+      });
+    </script>
+  </body>
+</html>
